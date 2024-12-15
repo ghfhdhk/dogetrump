@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$Doge Trump</title>
+  <style>
+      body {
+          margin: 0;
+          padding: 0;
+          background-image: url('/static/images/도지트럼프.JPG'); /* 배경 이미지 */
+          background-size: cover;
+          background-position: center;
+          background-attachment: fixed;
+          font-family: Arial, sans-serif;
+          color: white;
+          display: flex;           /* Flexbox 사용 */
+          justify-content: center; /* 수평 중앙 정렬 */
+          align-items: center;     /* 수직 중앙 정렬 */
+          height: 100vh;           /* 화면 전체 높이 */
+          text-align: center;      /* 텍스트 가운데 정렬 */
+      }
+      header {
+          position: absolute;
+          top: 0;
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          padding: 10px 20px;
+          background-color: rgba(0, 0, 0, 0.5);
+      }
+      #walletContainer {
+          display: flex;
+          flex-direction: column; /* 버튼과 주소를 세로 정렬 */
+          align-items: flex-end; /* 우측 정렬 */
+          gap: 10px;
+      }
+      #walletButton {
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+      }
+      #walletAddress {
+          font-size: 14px; /* 주소 글씨 크기 */
+          color: lightgray; /* 글자 색상 */
+          margin: 0;
+      }
+      #walletSelector {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(255, 255, 255, 0.9);
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+          text-align: center;
+          z-index: 1000;
+      }
+      #walletSelector button {
+          display: block;
+          margin: 10px 0;
+          padding: 10px;
+          font-size: 16px;
+          cursor: pointer;
+      }
+      #walletSelector .close {
+          background: red;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-top: 10px;
+      }
+      .center-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+      }
+      h1, p {
+          margin: 0;
+          font-size: 20px; /* 글자 크기 설정 */
+      }
+      #buyButton {
+          background-color: #FFD700; /* 황금색 버튼 */
+          border: none;
+          color: black;
+          padding: 10px 20px;
+          font-size: 16px;
+          font-weight: bold;
+          cursor: pointer;
+          border-radius: 5px;
+          margin-bottom: 20px;
+          text-transform: uppercase;
+          text-decoration: none; /* 링크의 밑줄 제거 */
+          display: inline-block; /* 버튼처럼 보이도록 설정 */
+      }
+      #buyButton:hover {
+          background-color: #FFC300; /* Hover 효과 */
+      }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="walletContainer">
+      <button id="walletButton">지갑 연결</button>
+      <p id="walletAddress">지갑 주소: </p> <!-- 버튼 바로 아래에 표시 -->
+    </div>
+  </header>
+  <div id="walletSelector">
+    <p>연결할 지갑을 선택하세요:</p>
+    <button data-wallet="metamask">메타마스크</button>
+    <button data-wallet="bitget">비트켓</button>
+    <button data-wallet="okx">OKX</button>
+    <button data-wallet="binance">바이낸스 지갑</button>
+    <button class="close">닫기</button>
+  </div>
+
+  <!-- 중앙 텍스트 -->
+  <div class="center-content">
+      <!-- $BUY doge trump 버튼 -->
+      <a id="buyButton" href="https://pump.fun/coin/8cMSXku9oQXFtAM4AoPc6XbceKvkTCbLnkLS6RCMpump" target="_blank">
+        $BUY doge trump
+      </a>
+      <h1>환영합니다!</h1>
+      <p>밈코인 제작소에 오신 것을 환영합니다.</p>
+  </div>
+
+  <script>
+    const walletButton = document.getElementById('walletButton');
+    const walletSelector = document.getElementById('walletSelector');
+    const walletAddressDisplay = document.getElementById('walletAddress');
+    let isWalletConnected = false;
+
+    walletButton.addEventListener('click', () => {
+      if (!isWalletConnected) {
+        walletSelector.style.display = 'block';
+      } else {
+        walletAddressDisplay.innerText = '지갑 주소: ';
+        walletButton.innerText = '지갑 연결';
+        isWalletConnected = false;
+      }
+    });
+
+    walletSelector.addEventListener('click', (event) => {
+      const selectedWallet = event.target.getAttribute('data-wallet');
+      if (selectedWallet) {
+        connectWallet(selectedWallet);
+        walletSelector.style.display = 'none';
+      }
+      if (event.target.classList.contains('close')) {
+        walletSelector.style.display = 'none';
+      }
+    });
+
+    async function connectWallet(wallet) {
+      try {
+        if (wallet === 'metamask' && window.ethereum) {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const walletAddress = accounts[0];
+          walletAddressDisplay.innerText = `지갑 주소: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
+          walletButton.innerText = '연결 해제';
+          isWalletConnected = true;
+        } else {
+          alert(`${wallet} 지갑은 현재 지원되지 않습니다.`);
+        }
+      } catch (error) {
+        console.error(`${wallet} 지갑 연결 실패:`, error);
+        alert('지갑 연결에 실패했습니다. 다시 시도해주세요.');
+      }
+    }
+  </script>
+</body>
+</html>
